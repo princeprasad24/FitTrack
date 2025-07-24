@@ -25,8 +25,8 @@ export default function AboutUs() {
             to support your journey.
           </p>
 
-          <h2 className="sectionHeading">Version</h2>
-          <pre className="aboutText">
+          <h2 className="sectionHeading">Versions</h2>
+          <p className="aboutText">
             <ul>
               <li>This is second version that i have made. </li>
               <li>first one made wiith HTML/CSS , js , flask</li>
@@ -38,7 +38,7 @@ export default function AboutUs() {
                 </li>
               </ul>
             </ul>
-          </pre>
+          </p>
 
           <h2 className="sectionHeading">Built Using</h2>
           <p className="aboutText">
@@ -49,7 +49,7 @@ export default function AboutUs() {
           <ul className="socialList" style={{display: "flex", flexDirection:"row", gap: "10%" , alignItems: "center", width: "100vw", textDecoration: "none"}}>
             <li>
               <a
-                href="https://instagram.com/yourusername"
+                href="https://www.instagram.com/princeprasad_1/profilecard/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -59,7 +59,7 @@ export default function AboutUs() {
             </li>
             <li>
               <a
-                href="https://linkedin.com/in/yourusername"
+                href="https://www.linkedin.com/in/prasadgaikawada/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -68,7 +68,7 @@ export default function AboutUs() {
             </li>
             <li>
               <a
-                href="https://github.com/yourusername"
+                href="https://github.com/princeprasad24"
                 target="_blank"
                 rel="noopener noreferrer"
               >
