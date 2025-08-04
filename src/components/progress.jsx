@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Line } from "react-chartjs-2";
+import { Line, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   LineElement,
   CategoryScale,
   LinearScale,
   PointElement,
-  Tooltip, 
+  Tooltip,
   Legend,
   Title,
+  ArcElement,
 } from "chart.js";
+
 import SideNav from "./SideNav";
 import TopNav from "./topNav";
 import { auth, db } from "../firebase/config";
@@ -20,6 +22,7 @@ ChartJS.register(
   PointElement,
   CategoryScale,
   LinearScale,
+  ArcElement,
   Title,
   Tooltip,
   Legend
@@ -29,11 +32,11 @@ export default function HealthProgress() {
   const [weightData, setWeightData] = useState([]);
   const [bmiData, setBmiData] = useState([]);
   const [tdeeData, setTdeeData] = useState([]);
-
-  const [workoutPlan, setWorkoutPlan] = useState([]);
+  const [workoutPlan, setWorkoutPlan] = useState("");
+  const [milestones, setMilestones] = useState([]);
 
   useEffect(() => {
-    const fetchWeight = async () => {
+    const fetchMetrics = async () => {
       const userId = auth.currentUser?.uid;
       if (!userId) return;
 
@@ -43,92 +46,115 @@ export default function HealthProgress() {
       if (snapshot.exists()) {
         const data = snapshot.val();
 
-        const weightEntries = Object.entries(data)
-          .map(([date, entry]) => ({ date, weight: entry.weight }))
-          .sort((a, b) => new Date(a.date) - new Date(b.date));
+        const weightEntries = [];
+        const bmiEntries = [];
+        const tdeeEntries = [];
 
-        const bmiEntries = Object.entries(data)
-          .map(([date, entry]) => ({ date, bmi: entry.bmi }))
-          .sort((a, b) => new Date(a.date) - new Date(b.date));
+        Object.entries(data).forEach(([date, entry]) => {
+          if (entry.weight !== undefined)
+            weightEntries.push({ date, weight: entry.weight });
+          if (entry.bmi !== undefined)
+            bmiEntries.push({ date, bmi: entry.bmi });
+          if (entry.tdee !== undefined)
+            tdeeEntries.push({ date, tdee: entry.tdee });
+        });
 
-        const tdeeEntries = Object.entries(data)
-          .map(([data, entry]) => ({ data, tdee: entry.tdee }))
-          .sort((a, b) => new Date(a.data) - new Date(b.date));
+        const sortedWeights = weightEntries.sort(
+          (a, b) => new Date(a.date) - new Date(b.date)
+        );
+        const sortedBmi = bmiEntries.sort(
+          (a, b) => new Date(a.date) - new Date(b.date)
+        );
+        const sortedTdee = tdeeEntries.sort(
+          (a, b) => new Date(a.date) - new Date(b.date)
+        );
 
-        setTdeeData(tdeeEntries);
+        setWeightData(sortedWeights);
+        setBmiData(sortedBmi);
+        setTdeeData(sortedTdee);
 
-        setWeightData(weightEntries);
-        setBmiData(bmiEntries);
+        const generated = generateMilestones(sortedWeights, sortedBmi);
+        setMilestones(generated);
       }
     };
 
-    fetchWeight();
+    fetchMetrics();
   }, []);
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchWorkoutPlan = async () => {
       const userId = auth.currentUser?.uid;
       if (!userId) return;
 
-      const weightRef = ref(db, `users/${userId}/profile`);
-      const snapshot = await get(weightRef);
+      const profileRef = ref(db, `users/${userId}/profile`);
+      const snapshot = await get(profileRef);
 
       if (snapshot.exists()) {
         const data = snapshot.val();
-        setWorkoutPlan(data.workoutPlan?.toLowerCase());
+        setWorkoutPlan(data.workoutPlan?.toLowerCase() || "");
       }
     };
 
-    fetch();
+    fetchWorkoutPlan();
   }, []);
 
-//   const generateMilestones = (weightData, bmiData) => {
-//   const milestones = [];
+  
+  const getBmiCategory = (bmi) => {
+    if (bmi < 18.5) {
+      
+      return "Underweight";
+    }
+    if (bmi < 24.9) {
+      
+      return "Normal";
+    }
+    if (bmi < 29.9) {
+      
+      return "Overweight";
+    }
 
-//   if (weightData.length > 0) {
-//     milestones.push({
-//       date: weightData[0].date,
-//       label: `Started at ${weightData[0].weight}kg`,
-//     });
+    return "Obese";
+  };
 
-//     let lastMilestoneWeight = weightData[0].weight;
+  const generateMilestones = (weightData, bmiData) => {
+    const milestones = [];
 
-//     weightData.forEach(({ date, weight }) => {
-//       if (Math.abs(weight - lastMilestoneWeight) >= 5) {
-//         milestones.push({
-//           date,
-//           label: `Reached ${weight}kg`,
-//         });
-//         lastMilestoneWeight = weight;
-//       }
-//     });
-//   }
+    if (weightData.length > 0) {
+      milestones.push({
+        date: weightData[0].date,
+        label: `Started at ${weightData[0].weight}kg`,
+      });
 
-//   if (bmiData.length > 0) {
-//     let prevCategory = getBmiCategory(bmiData[0].bmi);
+      let lastMilestoneWeight = weightData[0].weight;
 
-//     bmiData.forEach(({ date, bmi }) => {
-//       const category = getBmiCategory(bmi);
-//       if (category !== prevCategory) {
-//         milestones.push({
-//           date,
-//           label: `BMI status changed to ${category}`,
-//         });
-//         prevCategory = category;
-//       }
-//     });
-//   }
+      weightData.forEach(({ date, weight }) => {
+        if (Math.abs(weight - lastMilestoneWeight) >= 5) {
+          milestones.push({
+            date,
+            label: `Reached ${weight}kg`,
+          });
+          lastMilestoneWeight = weight;
+        }
+      });
+    }
 
-//   return milestones.sort((a, b) => new Date(a.date) - new Date(b.date));
-// };
+    if (bmiData.length > 0) {
+      let prevCategory = getBmiCategory(bmiData[0].bmi);
 
-// const getBmiCategory = (bmi) => {
-//   if (bmi < 18.5) return "Underweight";
-//   if (bmi < 24.9) return "Normal";
-//   if (bmi < 29.9) return "Overweight";
-//   return "Obese";
-// };
+      bmiData.forEach(({ date, bmi }) => {
+        const category = getBmiCategory(bmi);
+        if (category !== prevCategory) {
+          milestones.push({
+            date,
+            label: `BMI status changed to ${category}`,
+          });
+          prevCategory = category;
+        }
+      });
+    }
 
+    return milestones.sort((a, b) => new Date(a.date) - new Date(b.date));
+  };
 
   const weightChartData = {
     labels: weightData.map((e) => e.date),
@@ -136,7 +162,6 @@ export default function HealthProgress() {
       {
         label: "Weight (Kg)",
         data: weightData.map((e) => e.weight),
-        fill: false,
         borderColor: "#3b82f6",
         tension: 0.4,
         pointBackgroundColor: "#1d4ed8",
@@ -150,7 +175,6 @@ export default function HealthProgress() {
       {
         label: "BMI (Body Mass Index)",
         data: bmiData.map((e) => e.bmi),
-        fill: false,
         borderColor: "#10b981",
         tension: 0.4,
         pointBackgroundColor: "#059669",
@@ -158,60 +182,62 @@ export default function HealthProgress() {
     ],
   };
 
-  const weightChartOptions = {
+  const chartOptions = {
     responsive: true,
     plugins: {
       legend: { position: "top" },
     },
     scales: {
-      y: {
-        title: { display: true, text: "Weight (kg)" },
-      },
-      x: {
-        title: { display: true, text: "Date" },
-      },
-    },
-  };
-
-  const bmiChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: { position: "top" },
-    },
-    scales: {
-      y: {
-        title: { display: true, text: "BMI" },
-      },
-      x: {
-        title: { display: true, text: "Date" },
-      },
+      y: { title: { display: true, text: "Value" } },
+      x: { title: { display: true, text: "Date" } },
     },
   };
 
   const latestTdee =
     tdeeData.length > 0 ? tdeeData[tdeeData.length - 1].tdee : null;
 
-  const carbs = latestTdee ? Math.round((latestTdee * 0.5) / 4) : 0;
-  const protein = latestTdee ? Math.round((latestTdee * 0.2) / 4) : 0;
-  const fats = latestTdee ? Math.round((latestTdee * 0.3) / 9) : 0;
-
-  let calories = latestTdee;
-
-  if (calories && workoutPlan) {
+  let adjustedCalories = latestTdee;
+  if (latestTdee && workoutPlan) {
     switch (workoutPlan) {
       case "bulking":
-        calories = Math.round(latestTdee * 1.15);
+        adjustedCalories = Math.round(latestTdee * 1.15);
         break;
       case "cutting":
-        calories = Math.round(latestTdee * 0.85);
+        adjustedCalories = Math.round(latestTdee * 0.85);
         break;
-      case "fatLoss":
-        calories = Math.round(latestTdee - 500);
+      case "fatloss":
+        adjustedCalories = Math.round(latestTdee - 500);
         break;
       default:
-        calories = latestTdee;
+        adjustedCalories = latestTdee;
     }
   }
+
+  const carbs = adjustedCalories ? Math.round((adjustedCalories * 0.5) / 4) : 0;
+  const protein = adjustedCalories
+    ? Math.round((adjustedCalories * 0.2) / 4)
+    : 0;
+  const fats = adjustedCalories ? Math.round((adjustedCalories * 0.3) / 9) : 0;
+
+  const tdeeChartData = {
+    labels: ["Carbs (g)", "Protein (g)", "Fats (g)"],
+    datasets: [
+      {
+        label: "Daily Intake",
+        data: [carbs, protein, fats],
+        backgroundColor: ["#fbbf24", "#3b82f6", "#f87171"],
+        borderColor: "#fff",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const tdeeChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: { position: "bottom" },
+    },
+  };
 
   return (
     <>
@@ -219,6 +245,7 @@ export default function HealthProgress() {
       <div className="sideNavFix">
         <SideNav />
       </div>
+
       <div className="chartsDiv">
         <div className="charts weightChat">
           <h3
@@ -227,8 +254,9 @@ export default function HealthProgress() {
           >
             Weight
           </h3>
-          <Line data={weightChartData} options={weightChartOptions} />
+          <Line data={weightChartData} options={chartOptions} />
         </div>
+
         <div className="charts bmiChat">
           <h3
             className="ChartHeading"
@@ -236,24 +264,60 @@ export default function HealthProgress() {
           >
             BMI
           </h3>
-          <Line data={bmiChartData} options={bmiChartOptions} />
+          <Line data={bmiChartData} options={chartOptions} />
         </div>
+
+        <div
+          className="charts tdeeChart"
+          style={{ maxWidth: 400, margin: "auto" }}
+        >
+          <h3
+            className="ChartHeading"
+            style={{ textAlign: "start", color: "black" }}
+          >
+            Daily Food Intake
+          </h3>
+          <Pie data={tdeeChartData} options={tdeeChartOptions} />
+          <p style={{ textAlign: "center", marginTop: "10px" }}>
+            Estimated Total Daily Energy Expenditure:{" "}
+            <strong>{latestTdee ? `${latestTdee} kcal` : "N/A"}</strong>
+          </p>
+        </div>
+
+        <div className="charts foonInTake">
+          <h3
+            className="ChartHeading"
+           style={{ marginTop: "10px" }}>
+            Estimated Total Daily Energy Expenditure:{" "}
+            <strong>
+              {adjustedCalories ? `${adjustedCalories} kcal` : "N/A"}
+            </strong>
+          </h3>
+
+          <h2>Your Daily Nutrition Should Contain:</h2>
+          <p>Carbs: {carbs}g</p>
+          <p>Protein: {protein}g</p>
+          <p>Fats: {fats}g</p>
+
+          {/* <h2>
+            BMICategory: <p>{bmiData.bmi || "none"}</p>
+          </h2> */}
+        </div>
+
+         <div className="charts milestones" style={{ marginTop: 40,  overflow:"scroll"}}>
+        <h3>Progress Milestones</h3>
+        {milestones.length === 0 && <p>No milestones yet.</p>}
+        <ul>
+          {milestones.map(({ date, label }) => (
+            <li key={date}>
+              <strong>{new Date(date).toLocaleDateString()}:</strong> {label}
+            </li>
+          ))}
+        </ul>
+      </div>
       </div>
 
-      <div className="foonInTake">
-        <h3 style={{ marginTop: "10px" }}>
-          Estimated Total Daily Energy Expenditure:
-          <span>
-            <strong>{calories} kcal</strong>
-          </span>
-        </h3>
-        <h2>Your Daily Nutrition Should Contain</h2>
-        <p>carbs : {carbs}g</p>
-        <p>protein : {protein}g</p>
-        <p>fats : {fats}g</p>
-      </div>
-
-    
+     
     </>
   );
 }

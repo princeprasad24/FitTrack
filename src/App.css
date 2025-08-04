@@ -285,12 +285,15 @@ p, li {
 }
 
 .foonInTake {
+  position: relative;
+  left: -13%;
+  /* display: none; */
   text-align: center;
-  padding: 2rem;
+  /* padding: 2rem; */
   font-size: 1.1rem;
   background: #ffffff;
   border-radius: 10px;
-  margin: 2rem;
+  /* margin: 2rem; */
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
   border: 1px solid #d6dfee;
 }
@@ -311,6 +314,10 @@ p, li {
     height: 100%;
     background-color: #ffffff;
     z-index: 100;
+  }
+
+  .foonInTake{
+    left: 0;
   }
 
   .sidebar.show {
