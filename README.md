@@ -1,12 +1,89 @@
-# React + Vite
+# Fitness Tracker Web App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern and responsive fitness tracking web application built with **React**, **Firebase**, and **Chart.js**. This app helps users monitor and improve their health by tracking BMI, TDEE, and weight progress over time.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- User Authentication (Email/Password and Google sign-in via Firebase)
+- Track BMI (Body Mass Index)
+- Calculate TDEE (Total Daily Energy Expenditure)
+- Visualize progress with responsive charts
+- Save and update user profile information
+- Responsive sidebar with mobile-friendly hamburger toggle
+- Clean, professional UI inspired by EverydayHealth.com
 
-## Expanding the ESLint configuration
+## Technologies Used
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- React (with Hooks)
+- Firebase Authentication & Realtime Database
+- Chart.js (via react-chartjs-2)
+- CSS (custom, responsive)
+- React Router DOM
+
+## Folder Structure
+
+src/
+├── components/
+│ ├── About.jsx
+│ ├── ErrorPage.jsx
+│ ├── Home.jsx
+│ ├── Login.jsx
+│ ├── SignUp.jsx
+│ ├── Progress.jsx
+│ ├── Tdee.jsx
+│ ├── UserData.jsx
+│ ├── SideNav.jsx
+│ └── TopNav.jsx
+├── firebase/
+│ └── config.js
+├── App.js
+├── index.js
+└── App.css (or imported CSS file)
+
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js and npm installed
+- Firebase project set up
+
+### Installation
+
+1. Clone the repository:
+
+   git clone https://github.com/your-username/fitness-tracker.git
+   cd fitness-tracker
+Install dependencies:
+npm install
+
+
+Set up Firebase:
+
+Create a project in Firebase Console
+
+Enable Authentication (Email/Password and Google)
+
+Create a firebase/config.js file and add your Firebase config:
+
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getDatabase } from "firebase/database";
+
+const firebaseConfig = {
+  apiKey: "...",
+  authDomain: "...",
+  projectId: "...",
+  storageBucket: "...",
+  messagingSenderId: "...",
+  appId: "..."
+};
+
+const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const db = getDatabase(app);
+
+4.Run the app:
+npm start 
+    or
+npm run dev
