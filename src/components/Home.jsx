@@ -16,7 +16,7 @@ export default function Home({ userHealthData }) {
   }
 
   console.log(userHealthData);
-
+ 
   return (
     <>
       <TopNav />
@@ -39,9 +39,11 @@ export default function Home({ userHealthData }) {
             </p>
           </div>
           <div>
-            <button className="button" onClick={() => navigate("/progress")}>
+            {!userHealthData ? <button className="button" onClick={() => navigate("/progress")}>
               Check Progress
-            </button>
+            </button> : <button className="button" onClick={() => navigate("/userdata")}>
+              Add Data
+            </button> }
             <button className="button" onClick={() => auth.signOut()}>
               Sign Out
             </button>
@@ -49,7 +51,7 @@ export default function Home({ userHealthData }) {
         </section>
       </div>
 
-      <div className="showUserData">
+      {/* <div className="showUserData">
         {userHealthData ? (
           <>
           <p style={{color:"black"}}>Got</p>
@@ -62,7 +64,7 @@ export default function Home({ userHealthData }) {
             </button>
           </>
         )}
-      </div>
+      </div> */}
 
       <div className="userInfo"></div>
     </>

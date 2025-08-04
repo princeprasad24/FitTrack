@@ -26,73 +26,70 @@ export default function UserData({ onSubmitUserData }) {
     }));
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const ageNum = Number(userData.age);
-  const heightNum = Number(userData.height);
-  const weightNum = Number(userData.weight);
-  
-  if (!ageNum || !heightNum || !weightNum) {
-    alert(" age, height, and weight should be valid numeric values.");
-    return;
-  }
+    const ageNum = Number(userData.age);
+    const heightNum = Number(userData.height);
+    const weightNum = Number(userData.weight);
 
-  const heightMeters = heightNum / 100;
-  const bmi = (weightNum / (heightMeters * heightMeters)).toFixed(2);
-  let bmr;
+    if (!ageNum || !heightNum || !weightNum) {
+      alert(" age, height, and weight should be valid numeric values.");
+      return;
+    }
 
-  if (userData.gender === "male") {
-    bmr = 10 * weightNum + 6.25 * heightNum - 5 * ageNum + 5;
-  } else if (userData.gender === "female") {
-    bmr = 10 * weightNum + 6.25 * heightNum - 5 * ageNum - 161;
-  } else {
-    alert("Please select a valid gender.");
-    return;
-  }
+    const heightMeters = heightNum / 100;
+    const bmi = (weightNum / (heightMeters * heightMeters)).toFixed(2);
+    let bmr;
 
-  const activityFactors = {
-    sedentary: 1.2,
-    light: 1.375,
-    moderate: 1.55,
-    active: 1.725,
-    veryActive: 1.9,
+    if (userData.gender === "male") {
+      bmr = 10 * weightNum + 6.25 * heightNum - 5 * ageNum + 5;
+    } else if (userData.gender === "female") {
+      bmr = 10 * weightNum + 6.25 * heightNum - 5 * ageNum - 161;
+    } else {
+      alert("Please select a valid gender.");
+      return;
+    }
+
+    const activityFactors = {
+      sedentary: 1.2,
+      light: 1.375,
+      moderate: 1.55,
+      active: 1.725,
+      veryActive: 1.9,
+    };
+
+    const activityFactor = activityFactors[userData.typeofWorkout] || 1.2;
+    const tdee = Math.round(bmr * activityFactor);
+
+    const dataToSave = {
+      ...userData,
+      bmi,
+      tdee,
+    };
+
+    try {
+      const userId = auth.currentUser?.uid || `guest_${Date.now()}`;
+
+      const userRef = ref(db, `users/${userId}/profile`);
+      await set(userRef, dataToSave);
+
+      const today = new Date().toISOString().split("T")[0];
+      const weightRef = ref(db, `users/${userId}/weightEntries/${today}`);
+      await set(weightRef, {
+        weight: weightNum,
+        bmi: bmi,
+        tdee: tdee,
+      });
+
+      setSubmittedData(dataToSave);
+      onSubmitUserData(dataToSave);
+      alert("Data saved");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save data.");
+    }
   };
-
-  const activityFactor = activityFactors[userData.typeofWorkout] || 1.2;
-  const tdee = Math.round(bmr * activityFactor);
-
-  const dataToSave = {
-    ...userData,
-    bmi,
-    tdee,
-  };
-
-  try {
-    const userId = auth.currentUser?.uid || `guest_${Date.now()}`;
-
-    
-    const userRef = ref(db, `users/${userId}/profile`);
-    await set(userRef, dataToSave);
-
-    
-    const today = new Date().toISOString().split("T")[0];
-    const weightRef = ref(db, `users/${userId}/weightEntries/${today}`);
-    await set(weightRef, {
-      weight: weightNum,
-      bmi: bmi,
-      tdee : tdee,
-    });
-
-    setSubmittedData(dataToSave);
-    onSubmitUserData(dataToSave);
-    alert("Data saved");
-  } catch (err) {
-    console.error(err);
-    alert("Failed to save data.");
-  }
-};
-
 
   return (
     <div className="userDataPage">
@@ -124,13 +121,14 @@ export default function UserData({ onSubmitUserData }) {
             <label className="inputLabel">Age (years):</label>
             <input
               className="inputField"
-              type="number"
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               name="age"
               value={userData.age}
               onChange={handleChange}
               required
               placeholder="e.g., 25"
-              min="1"
             />
           </div>
 
@@ -209,7 +207,16 @@ export default function UserData({ onSubmitUserData }) {
               onChange={handleChange}
               required
               placeholder="e.g., 70"
-              max={userData.weight  - 1}
+              min={
+                userData.workoutPlan === "bulking"
+                  ? Number(userData.weight) + 1
+                  : 1
+              }
+              max={
+                userData.workoutPlan === "cutting"
+                  ? Number(userData.weight) - 1
+                  : undefined
+              }
             />
           </div>
 

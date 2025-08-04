@@ -6,7 +6,7 @@ import {
   CategoryScale,
   LinearScale,
   PointElement,
-  Tooltip,
+  Tooltip, 
   Legend,
   Title,
 } from "chart.js";
