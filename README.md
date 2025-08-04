@@ -32,13 +32,14 @@ A modern and responsive fitness tracking web application built with **React**, *
 
 1. Clone the repository:
 
-   git clone https://github.com/your-username/fitness-tracker.git
+   git clone https://github.com/princeprasad24/FitTrack.git
    cd fitness-tracker
-Install dependencies:
+
+2. Install dependencies:
 npm install
 
 
-Set up Firebase:
+3. Set up Firebase:
 
 Create a project in Firebase Console
 
@@ -63,7 +64,7 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getDatabase(app);
 
-4.Run the app:
+4. Run the app:
 npm start 
     or
 npm run dev
