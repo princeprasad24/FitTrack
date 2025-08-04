@@ -46,7 +46,7 @@ export default function AboutUs() {
           </p>
 
           <h2 className="sectionHeading" >Contact Us</h2>
-          <ul className="socialList" style={{display: "flex", flexDirection:"row", gap: "10%" , alignItems: "center", width: "100vw", textDecoration: "none"}}>
+          <ul className="socialList" style={{display: "flex",  gap: "10%" , alignItems: "center", width: "100vw", textDecoration: "none"}}>
             <li>
               <a
                 href="https://www.instagram.com/princeprasad_1/profilecard/"

@@ -39,7 +39,7 @@ export default function Home({ userHealthData }) {
             </p>
           </div>
           <div>
-            {!userHealthData ? <button className="button" onClick={() => navigate("/progress")}>
+            {userHealthData ? <button className="button" onClick={() => navigate("/progress")}>
               Check Progress
             </button> : <button className="button" onClick={() => navigate("/userdata")}>
               Add Data
