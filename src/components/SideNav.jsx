@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaHome, FaUser, FaChartBar, FaInfoCircle, FaBars } from "react-icons/fa";
+import { FaHome, FaUser, FaChartBar, FaInfoCircle, FaBars, FaTimes } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 
 export default function SideNav() {
@@ -16,10 +16,9 @@ export default function SideNav() {
 
   return (
     <>
-     <div className="hamburger" style={{ display: open ? "none" : "flex" }} onClick={toggleMenu}>
-  <FaBars />
-</div>
-
+      <div onClick={toggleMenu}>
+        {open ? <p className="icon hamburger" style={{padding:"5px", position:"relative", left:"120px", display:"flex", alignItems:"center" , justifyContent:"center", width:"60px"}}><FaTimes/></p> :<span className="hamburger" > < FaBars /></span>}
+      </div>
 
       <aside className={`sidebar ${open ? "show" : ""}`}>
         <nav className="nav">
@@ -27,9 +26,7 @@ export default function SideNav() {
             <NavLink
               key={item.path}
               to={item.path}
-              className={({ isActive }) =>
-                isActive ? "navItem active" : "navItem"
-              }
+              className={({ isActive }) => (isActive ? "navItem active" : "navItem")}
               onClick={() => setOpen(false)} 
             >
               <span className="icon">{item.icon}</span>

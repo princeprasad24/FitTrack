@@ -22,7 +22,7 @@ p, li {
   color: #555;
 }
 
-/* Navigation */
+
 .navBar {
   background-color: #ffffff;
   padding: 1rem 2rem;
@@ -48,7 +48,7 @@ p, li {
   border: 2px solid #1589bb;
 }
 
-/* Sidebar */
+
 .sidebar {
   position: fixed;
   left: 10px;
@@ -86,7 +86,7 @@ p, li {
   margin-left: 200px;
 }
 
-/* Buttons */
+
 .button,
 .submitButton {
   background-color: #1589bb;
@@ -105,12 +105,12 @@ p, li {
   background-color: #1e336a;
 }
 
-/* General Page Layout */
+
 .page {
   padding: 2rem;
 }
 
-/* Welcome Section */
+
 .welcomeSection {
   background: #ffffff;
   padding: 2rem;
@@ -137,7 +137,7 @@ p, li {
   margin-top: 2rem;
 }
 
-/* User Data Form */
+
 .userDataPage {
   padding: 2rem;
 }
@@ -194,7 +194,7 @@ p, li {
   border: 1px solid #d6dfee;
 }
 
-/* About Page */
+
 .aboutPage {
   padding: 2rem;
 }
@@ -226,7 +226,7 @@ p, li {
   color: #555;
 }
 
-/* Social Links */
+
 .socialList {
   list-style: none;
   padding: 0;
@@ -244,7 +244,7 @@ p, li {
   gap: 0.5rem;
 }
 
-/* Hamburger Menu */
+
 .hamburger {
   display: none;
   font-size: 1.5rem;
@@ -259,7 +259,7 @@ p, li {
   cursor: pointer;
 }
 
-/* Charts */
+
 .chartsDiv {
   display: flex;
   flex-wrap: wrap;
@@ -295,7 +295,7 @@ p, li {
   border: 1px solid #d6dfee;
 }
 
-/* Responsive Styles */
+
 @media (max-width: 768px) {
   .hamburger {
     width: 50px;

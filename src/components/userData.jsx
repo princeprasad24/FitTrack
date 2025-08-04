@@ -92,172 +92,176 @@ export default function UserData({ onSubmitUserData }) {
   };
 
   return (
-    <div className="userDataPage">
-      <TopNav />
+    <>
+        <TopNav />
 
-      <div className="sideNavFix">
-        <SideNav />
+        <div className="sideNavFix">
+          <SideNav />
+        </div>
+      <div className="userDataPage">
+
+        <div className="userSection">
+          <h2 className="userHeading">User Health Data</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="inputGroup">
+              <label className="inputLabel">Gender:</label>
+              <select
+                className="inputField"
+                name="gender"
+                value={userData.gender}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+
+            <div className="inputGroup">
+              <label className="inputLabel">Age (years):</label>
+              <input
+                className="inputField"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                name="age"
+                value={userData.age}
+                onChange={handleChange}
+                required
+                placeholder="e.g., 25"
+              />
+            </div>
+
+            <div className="inputGroup">
+              <label className="inputLabel">Height (cm):</label>
+              <input
+                className="inputField"
+                type="number"
+                name="height"
+                value={userData.height}
+                onChange={handleChange}
+                required
+                placeholder="e.g., 170"
+                min="30"
+              />
+            </div>
+
+            <div className="inputGroup">
+              <label className="inputLabel">Weight (kg):</label>
+              <input
+                className="inputField"
+                type="number"
+                name="weight"
+                value={userData.weight}
+                onChange={handleChange}
+                required
+                placeholder="e.g., 65"
+                min="1"
+              />
+            </div>
+
+            <div className="inputGroup">
+              <label className="inputLabel">Activity Level:</label>
+              <select
+                className="inputField"
+                name="typeofWorkout"
+                value={userData.typeofWorkout}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select</option>
+                <option value="sedentary">
+                  Sedentary (little/no exercise)
+                </option>
+                <option value="light">Light (1-3 days/week)</option>
+                <option value="moderate">Moderate (3-5 days/week)</option>
+                <option value="active">Active (6-7 days/week)</option>
+                <option value="veryActive">
+                  Very Active (physical job + daily workout)
+                </option>
+              </select>
+            </div>
+
+            <div className="inputGroup">
+              <label className="inputLabel">Type of workout:</label>
+              <select
+                className="inputField"
+                name="workoutPlan"
+                value={userData.workoutPlan}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select</option>
+                <option value="bulking">Bulking</option>
+                <option value="cutting">Cutting</option>
+                <option value="fatLoss">Fat Loss</option>
+                <option value="none">None</option>
+              </select>
+            </div>
+
+            <div className="inputGroup">
+              <label className="inputLabel">Target Weight (kg):</label>
+              <input
+                className="inputField"
+                type="number"
+                name="weightTarget"
+                value={userData.weightTarget}
+                onChange={handleChange}
+                required
+                placeholder="e.g., 70"
+                min={
+                  userData.workoutPlan === "bulking"
+                    ? Number(userData.weight) + 1
+                    : 1
+                }
+                max={
+                  userData.workoutPlan === "cutting"
+                    ? Number(userData.weight) - 1
+                    : undefined
+                }
+              />
+            </div>
+
+            <button type="submit" className="submitButton">
+              Submit
+            </button>
+          </form>
+
+          {submittedData && (
+            <div className="resultSection" style={{ marginTop: "20px" }}>
+              <h3>Submitted User Data:</h3>
+              <p>
+                <strong>Gender:</strong> {submittedData.gender}
+              </p>
+              <p>
+                <strong>Age:</strong> {submittedData.age}
+              </p>
+              <p>
+                <strong>Height:</strong> {submittedData.height} cm
+              </p>
+              <p>
+                <strong>Weight:</strong> {submittedData.weight} kg
+              </p>
+              <p>
+                <strong>Activity Level:</strong> {submittedData.typeofWorkout}
+              </p>
+              <p>
+                <strong>Workout Plan:</strong> {submittedData.workoutPlan}
+              </p>
+              <p>
+                <strong>Target Weight:</strong> {submittedData.weightTarget} kg
+              </p>
+              <p>
+                <strong>BMI:</strong> {submittedData.bmi}
+              </p>
+              <p>
+                <strong>TDEE:</strong> {submittedData.tdee} kcal/day
+              </p>
+            </div>
+          )}
+        </div>
       </div>
-
-      <div className="userSection">
-        <h2 className="userHeading">User Health Data</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="inputGroup">
-            <label className="inputLabel">Gender:</label>
-            <select
-              className="inputField"
-              name="gender"
-              value={userData.gender}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </select>
-          </div>
-
-          <div className="inputGroup">
-            <label className="inputLabel">Age (years):</label>
-            <input
-              className="inputField"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              name="age"
-              value={userData.age}
-              onChange={handleChange}
-              required
-              placeholder="e.g., 25"
-            />
-          </div>
-
-          <div className="inputGroup">
-            <label className="inputLabel">Height (cm):</label>
-            <input
-              className="inputField"
-              type="number"
-              name="height"
-              value={userData.height}
-              onChange={handleChange}
-              required
-              placeholder="e.g., 170"
-              min="30"
-            />
-          </div>
-
-          <div className="inputGroup">
-            <label className="inputLabel">Weight (kg):</label>
-            <input
-              className="inputField"
-              type="number"
-              name="weight"
-              value={userData.weight}
-              onChange={handleChange}
-              required
-              placeholder="e.g., 65"
-              min="1"
-            />
-          </div>
-
-          <div className="inputGroup">
-            <label className="inputLabel">Activity Level:</label>
-            <select
-              className="inputField"
-              name="typeofWorkout"
-              value={userData.typeofWorkout}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select</option>
-              <option value="sedentary">Sedentary (little/no exercise)</option>
-              <option value="light">Light (1-3 days/week)</option>
-              <option value="moderate">Moderate (3-5 days/week)</option>
-              <option value="active">Active (6-7 days/week)</option>
-              <option value="veryActive">
-                Very Active (physical job + daily workout)
-              </option>
-            </select>
-          </div>
-
-          <div className="inputGroup">
-            <label className="inputLabel">Type of workout:</label>
-            <select
-              className="inputField"
-              name="workoutPlan"
-              value={userData.workoutPlan}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select</option>
-              <option value="bulking">Bulking</option>
-              <option value="cutting">Cutting</option>
-              <option value="fatLoss">Fat Loss</option>
-              <option value="none">None</option>
-            </select>
-          </div>
-
-          <div className="inputGroup">
-            <label className="inputLabel">Target Weight (kg):</label>
-            <input
-              className="inputField"
-              type="number"
-              name="weightTarget"
-              value={userData.weightTarget}
-              onChange={handleChange}
-              required
-              placeholder="e.g., 70"
-              min={
-                userData.workoutPlan === "bulking"
-                  ? Number(userData.weight) + 1
-                  : 1
-              }
-              max={
-                userData.workoutPlan === "cutting"
-                  ? Number(userData.weight) - 1
-                  : undefined
-              }
-            />
-          </div>
-
-          <button type="submit" className="submitButton">
-            Submit
-          </button>
-        </form>
-
-        {submittedData && (
-          <div className="resultSection" style={{ marginTop: "20px" }}>
-            <h3>Submitted User Data:</h3>
-            <p>
-              <strong>Gender:</strong> {submittedData.gender}
-            </p>
-            <p>
-              <strong>Age:</strong> {submittedData.age}
-            </p>
-            <p>
-              <strong>Height:</strong> {submittedData.height} cm
-            </p>
-            <p>
-              <strong>Weight:</strong> {submittedData.weight} kg
-            </p>
-            <p>
-              <strong>Activity Level:</strong> {submittedData.typeofWorkout}
-            </p>
-            <p>
-              <strong>Workout Plan:</strong> {submittedData.workoutPlan}
-            </p>
-            <p>
-              <strong>Target Weight:</strong> {submittedData.weightTarget} kg
-            </p>
-            <p>
-              <strong>BMI:</strong> {submittedData.bmi}
-            </p>
-            <p>
-              <strong>TDEE:</strong> {submittedData.tdee} kcal/day
-            </p>
-          </div>
-        )}
-      </div>
-    </div>
+    </>
   );
 }
