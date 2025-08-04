@@ -20,26 +20,6 @@ A modern and responsive fitness tracking web application built with **React**, *
 - CSS (custom, responsive)
 - React Router DOM
 
-## Folder Structure
-
-src/
-├── components/
-│ ├── About.jsx
-│ ├── ErrorPage.jsx
-│ ├── Home.jsx
-│ ├── Login.jsx
-│ ├── SignUp.jsx
-│ ├── Progress.jsx
-│ ├── Tdee.jsx
-│ ├── UserData.jsx
-│ ├── SideNav.jsx
-│ └── TopNav.jsx
-├── firebase/
-│ └── config.js
-├── App.js
-├── index.js
-└── App.css (or imported CSS file)
-
 
 ## Getting Started
 
